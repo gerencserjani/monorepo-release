@@ -1,7 +1,7 @@
 {
-  "name": "first-app",
+  "name": "app1",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/first-app/src",
+  "sourceRoot": "apps/app1/src",
   "projectType": "application",
   "targets": {
     "build": {
@@ -13,14 +13,14 @@
       "options": {
         "target": "node",
         "compiler": "tsc",
-        "outputPath": "dist/apps/first-app",
-        "main": "apps/first-app/src/main.ts",
-        "tsConfig": "apps/first-app/tsconfig.app.json",
+        "outputPath": "dist/apps/app1",
+        "main": "apps/app1/src/main.ts",
+        "tsConfig": "apps/app1/tsconfig.app.json",
         "assets": [
-          "apps/first-app/src/assets"
+          "apps/app1/src/assets"
         ],
         "isolatedConfig": true,
-        "webpackConfig": "apps/first-app/webpack.config.js"
+        "webpackConfig": "apps/app1/webpack.config.js"
       },
       "configurations": {
         "development": {},
@@ -31,14 +31,14 @@
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "first-app:build"
+        "buildTarget": "app1:build"
       },
       "configurations": {
         "development": {
-          "buildTarget": "first-app:build:development"
+          "buildTarget": "app1:build:development"
         },
         "production": {
-          "buildTarget": "first-app:build:production"
+          "buildTarget": "app1:build:production"
         }
       }
     },
@@ -49,7 +49,7 @@
       ],
       "options": {
         "lintFilePatterns": [
-          "apps/first-app/**/*.ts"
+          "apps/app1/**/*.ts"
         ]
       }
     },
@@ -59,7 +59,7 @@
         "{workspaceRoot}/coverage/{projectRoot}"
       ],
       "options": {
-        "jestConfig": "apps/first-app/jest.config.ts",
+        "jestConfig": "apps/app1/jest.config.ts",
         "passWithNoTests": true
       },
       "configurations": {

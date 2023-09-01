@@ -1,6 +1,6 @@
 /* eslint-disable */
 export default {
-  displayName: 'first-app-e2e',
+  displayName: 'app1-e2e',
   preset: '../../jest.preset.js',
   globalSetup: '<rootDir>/src/support/global-setup.ts',
   globalTeardown: '<rootDir>/src/support/global-teardown.ts',
@@ -12,5 +12,5 @@ export default {
     }],
   },
   moduleFileExtensions: ['ts', 'js', 'html'],
-  coverageDirectory: '../../coverage/first-app-e2e',
+  coverageDirectory: '../../coverage/app1-e2e',
 };

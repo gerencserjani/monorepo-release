@@ -7,7 +7,7 @@
 
 ## Start the app
 
-To start the development server run `nx serve FirstApp`. Open your browser and navigate to http://localhost:4200/. Happy coding!
+To start the development server run `nx serve App1`. Open your browser and navigate to http://localhost:4200/. Happy coding!
 
 
 ## Generate code
