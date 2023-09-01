@@ -1,0 +1,14 @@
+{
+  "extends": "@semantic-release-plus/semantic-release",
+  "monorepo": {
+    "analyzeCommits": ["@semantic-release-plus/commit-analyzer"],
+    "generateNotes": ["@semantic-release-plus/release-notes-generator"]
+  },
+  "plugins": [
+    "@semantic-release-plus/commit-analyzer",
+    "@semantic-release-plus/release-notes-generator",
+    "@semantic-release-plus/github",
+    "@semantic-release/npm",
+    "@semantic-release-plus/exec"
+  ]
+}
