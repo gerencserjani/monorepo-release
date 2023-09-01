@@ -21,7 +21,7 @@ jobs:
         run: npm install
 
       - name: Build affected projects
-        run: nx affected:build --base=origin/main~1 --head=origin/main
+        run: npx nx affected:build --base=origin/main~1 --head=origin/main
 
       - name: Semantic Release
         run: npx semantic-release-plus
