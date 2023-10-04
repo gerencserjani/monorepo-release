@@ -9,6 +9,13 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 * **semver:** Semver usage ([21e27bc](https://github.com/gerencserjani/monorepo-release/commit/21e27bcb81ff650f6cb5bac21be538a0fd4a54d4))
 
+## [0.2.0](https://github.com/gerencserjani/monorepo-release/compare/util-string-0.1.0...util-string-0.2.0) (2023-10-04)
+
+
+### Features
+
+* **semver:** Semver usage ([21e27bc](https://github.com/gerencserjani/monorepo-release/commit/21e27bcb81ff650f6cb5bac21be538a0fd4a54d4))
+
 ## 0.1.0 (2023-10-04)
 
 
