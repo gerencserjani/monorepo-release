@@ -4,6 +4,13 @@
   "sourceRoot": "apps/app1/src",
   "projectType": "application",
   "targets": {
+    "release": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "preset": "conventional",
+        "tagPrefix": "${projectName}-v"
+      }
+    },
     "build": {
       "executor": "@nx/webpack:webpack",
       "outputs": [
