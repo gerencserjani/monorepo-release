@@ -1,6 +1,10 @@
-# Changelog
+app2 changelog
+## [0.1.1](https://github.com/gerencserjani/monorepo-release/compare/app2-0.1.0...app2-0.1.1) (2023-10-05)
 
-This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
+
+### Bug Fixes
+
+* **string-util:** String util project json ([94aa92c](https://github.com/gerencserjani/monorepo-release/commit/94aa92cbdf356b6df75bca8eff55769d32b3d921))
 
 ## 0.1.0 (2023-10-05)
 
