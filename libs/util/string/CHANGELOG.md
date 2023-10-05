@@ -1,4 +1,11 @@
 # util-string changelog
+## [0.2.0](https://github.com/gerencserjani/monorepo-release/compare/util-string-0.1.0...util-string-0.2.0) (2023-10-05)
+
+
+### Features
+
+* **StringUtil:** SSSSSSSSSSSSSSSSSSSSSSSSSSS ([1eaa05b](https://github.com/gerencserjani/monorepo-release/commit/1eaa05b3f930b356ec774d594d5935e723cb3730))
+
 ## 0.1.0 (2023-10-05)
 
 
