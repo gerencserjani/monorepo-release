@@ -1,4 +1,11 @@
-app2 changelog
+# app2 changelog
+## [0.1.2](https://github.com/gerencserjani/monorepo-release/compare/app2-0.1.1...app2-0.1.2) (2023-10-05)
+
+
+### Bug Fixes
+
+* **string-util:** String util project json ([2ab8b7c](https://github.com/gerencserjani/monorepo-release/commit/2ab8b7c86d14514eb596877509c8dd5da29167f8))
+
 ## [0.1.1](https://github.com/gerencserjani/monorepo-release/compare/app2-0.1.0...app2-0.1.1) (2023-10-05)
 
 
