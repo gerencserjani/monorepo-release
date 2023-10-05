@@ -1,4 +1,9 @@
 # app1 changelog
+## [0.1.2](https://github.com/gerencserjani/monorepo-release/compare/app1-0.1.1...app1-0.1.2) (2023-10-05)
+
+### Dependency Updates
+
+* `util-string` updated to version `0.1.1`
 ## [0.1.1](https://github.com/gerencserjani/monorepo-release/compare/app1-0.1.0...app1-0.1.1) (2023-10-05)
 
 ### Dependency Updates
