@@ -8,6 +8,7 @@ export class AppController {
 
   @Get()
   getData() {
+    console.log("sas")
     return this.appService.getData();
   }
 }

@@ -9,6 +9,7 @@ export class StringUtil {
   }
 
   static world(): string {
+    console.log("sas2")
     return "Worlddddd";
   }
 }
