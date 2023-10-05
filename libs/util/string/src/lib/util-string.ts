@@ -11,8 +11,4 @@ export class StringUtil {
   static world(): string {
     return "World";
   }
-
-  static huehue() {
-    return "huehue";
-  }
 }
