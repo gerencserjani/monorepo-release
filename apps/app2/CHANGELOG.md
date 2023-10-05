@@ -1,4 +1,8 @@
-# util-string changelog
+# app1 changelog
+## [3.1.1](https://github.com/gerencserjani/monorepo-release/compare/app1-3.1.0...app1-3.1.1) (2023-10-05)
+
+## [0.1.1](https://github.com/gerencserjani/monorepo-release/compare/app2-0.1.0...app2-0.1.1) (2023-10-05)
+
 ## [0.2.0](https://github.com/gerencserjani/monorepo-release/compare/util-string-0.1.0...util-string-0.2.0) (2023-10-05)
 
 ## 0.1.0 (2023-10-05)
