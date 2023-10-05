@@ -12,4 +12,8 @@ export class StringUtil {
     console.log("sas2sss")
     return "Worlddddd";
   }
+
+  static h(): string {
+    return "Worlddddd";
+  }
 }
