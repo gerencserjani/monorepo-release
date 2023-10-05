@@ -9,6 +9,6 @@ export class StringUtil {
   }
 
   static world(): string {
-    return "Worldd";
+    return "Worlddd";
   }
 }
