@@ -10,7 +10,8 @@
         "preset": "conventional",
         "changelogHeader": "# {projectName} changelog",
         "tagPrefix": "{projectName}-",
-        "trackDeps": true
+        "trackDeps": true,
+        "syncVersions": true
       }
     },
     "lint": {
