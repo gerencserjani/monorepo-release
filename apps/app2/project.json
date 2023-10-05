@@ -10,8 +10,7 @@
         "preset": "conventional",
         "changelogHeader": "# {projectName} changelog",
         "tagPrefix": "{projectName}-",
-        "trackDeps": true,
-        "syncVersions": true
+        "trackDeps": true
       }
     },
     "build": {
