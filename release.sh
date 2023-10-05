@@ -7,14 +7,20 @@ fi
 
 new_version="$1"
 
-affected_apps=$(nx print-affected --select=projects --type=app)
+latest_tag=$(git describe --tags --abbrev=0 --match "cms-gateway-v*.*.*")
+
+affected_apps=$(nx print-affected --select=projects --type=app --base=latest_tag)
 
 for app in $affected_apps; do
-  npm --prefix ./apps/$app version $new_version
-  git tag "$app-v$new_version"
+  app_name="${app%,}"
+  npm --prefix ./apps/$app_name version $new_version
+  git tag "$app_name-v$new_version"
 done
 
-commit_message="Updated $affected_apps to version $new_version and tagged individually."
+npm --prefix version $new_version
+git tag "cms-gateway"-v$new_version"
+
+commit_message="Updated $affected_apps and GATEWAY to version $new_version and tagged individually."
 
 git commit -am "$commit_message"
 
