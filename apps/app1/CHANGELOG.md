@@ -1,4 +1,11 @@
 # app1 changelog
+## [3.1.0](https://github.com/gerencserjani/monorepo-release/compare/app1-v3.0.0...app1-3.1.0) (2023-10-05)
+
+
+### Features
+
+* **projectjson:** tttt ([bcfb4d6](https://github.com/gerencserjani/monorepo-release/commit/bcfb4d6b1ebc419a5f2a03045280c26e0d2a2500))
+
 ## [0.1.3](https://github.com/gerencserjani/monorepo-release/compare/app1-0.1.2...app1-0.1.3) (2023-10-05)
 
 ### Dependency Updates
