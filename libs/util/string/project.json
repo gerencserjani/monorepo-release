@@ -4,6 +4,15 @@
   "sourceRoot": "libs/util/string/src",
   "projectType": "library",
   "targets": {
+    "release": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "preset": "conventional",
+        "changelogHeader": "# {projectName} changelog",
+        "tagPrefix": "{projectName}-",
+        "trackDeps": true
+      }
+    },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
