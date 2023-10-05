@@ -1,4 +1,11 @@
 # util-string changelog
+## [0.2.0](https://github.com/gerencserjani/monorepo-release/compare/util-string-0.1.0...util-string-0.2.0) (2023-10-05)
+
+
+### Features
+
+* **StringUtil:** remove unused fn ([e7d7bc7](https://github.com/gerencserjani/monorepo-release/commit/e7d7bc7f43280cc55f42a9b19481034dccb6cce6))
+
 ## 0.1.0 (2023-10-05)
 
 
