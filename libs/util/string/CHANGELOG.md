@@ -1,4 +1,18 @@
-# util-string changelog
+# app1 changelog
+## [3.1.2](https://github.com/gerencserjani/monorepo-release/compare/app1-3.1.1...app1-3.1.2) (2023-10-05)
+
+
+### Features
+
+* **StringUtil:** Seeeeeeeeeeeeeeeeeeeeeeeee ([a69db9f](https://github.com/gerencserjani/monorepo-release/commit/a69db9fd64d62ae2d706af4258f70405248e9750))
+
+## [0.3.0](https://github.com/gerencserjani/monorepo-release/compare/util-string-0.2.1...util-string-0.3.0) (2023-10-05)
+
+
+### Features
+
+* **StringUtil:** Seeeeeeeeeeeeeeeeeeeeeeeee ([a69db9f](https://github.com/gerencserjani/monorepo-release/commit/a69db9fd64d62ae2d706af4258f70405248e9750))
+
 ## [0.3.0](https://github.com/gerencserjani/monorepo-release/compare/util-string-0.2.1...util-string-0.3.0) (2023-10-05)
 
 
