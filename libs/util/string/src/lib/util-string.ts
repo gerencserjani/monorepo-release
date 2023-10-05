@@ -11,4 +11,8 @@ export class StringUtil {
   static world(): string {
     return "World";
   }
+
+  static calculate(): number {
+    return 1 + 2;
+  }
 }
