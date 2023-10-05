@@ -7,4 +7,8 @@ export class StringUtil {
   static hello(): string {
     return 'Hello';
   }
+
+  static world(): string {
+    return "World";
+  }
 }
