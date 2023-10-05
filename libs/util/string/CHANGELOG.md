@@ -1,4 +1,11 @@
 # util-string changelog
+## [0.2.0](https://github.com/gerencserjani/monorepo-release/compare/util-string-0.1.0...util-string-0.2.0) (2023-10-05)
+
+
+### Features
+
+* **StringUtil:** sssssdasdasdasdsadasdsadsa ([ffac347](https://github.com/gerencserjani/monorepo-release/commit/ffac347a817ded692477f9a9f155bb1f3c90faa9))
+
 ## 0.1.0 (2023-10-05)
 
 
