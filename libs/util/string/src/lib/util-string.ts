@@ -11,4 +11,8 @@ export class StringUtil {
   static world(): string {
     return "World";
   }
+
+  static helloWorld(): string {
+    return `${StringUtil.hello()} ${StringUtil.world()}`;
+  }
 }
