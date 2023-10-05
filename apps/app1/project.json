@@ -8,6 +8,7 @@
       "executor": "@jscutlery/semver:version",
       "options": {
         "preset": "conventional",
+        "changelogHeader": "{projectName} changelog",
         "tagPrefix": "{projectName}-",
         "trackDeps": true
       }
