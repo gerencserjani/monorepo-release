@@ -1,4 +1,18 @@
 # util-string changelog
+## [0.3.0](https://github.com/gerencserjani/monorepo-release/compare/util-string-0.2.0...util-string-0.3.0) (2023-10-05)
+
+
+### Features
+
+* **StringUtil:** Impl calculate ([e4d5625](https://github.com/gerencserjani/monorepo-release/commit/e4d5625dd9ebcbab1a05af71b94703216bc0fe97))
+
+## [0.3.0](https://github.com/gerencserjani/monorepo-release/compare/util-string-0.2.0...util-string-0.3.0) (2023-10-05)
+
+
+### Features
+
+* **StringUtil:** Impl calculate ([e4d5625](https://github.com/gerencserjani/monorepo-release/commit/e4d5625dd9ebcbab1a05af71b94703216bc0fe97))
+
 ## [0.2.0](https://github.com/gerencserjani/monorepo-release/compare/util-string-0.1.0...util-string-0.2.0) (2023-10-05)
 
 
