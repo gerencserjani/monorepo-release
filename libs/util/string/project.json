@@ -4,13 +4,6 @@
   "sourceRoot": "libs/util/string/src",
   "projectType": "library",
   "targets": {
-    "release": {
-      "executor": "@jscutlery/semver:version",
-      "options": {
-        "preset": "conventional",
-        "tagPrefix": "{projectName}-"
-      }
-    },
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
