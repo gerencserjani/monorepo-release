@@ -17,7 +17,7 @@ for app in $affected_apps; do
   git tag "$app_name-v$new_version"
 done
 
-npm --version $new_version
+npm version $new_version --no-git-tag-version
 git tag "cms-gateway-v$new_version"
 
 commit_message="Updated $affected_apps and GATEWAY to version $new_version and tagged individually."
