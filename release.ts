@@ -98,7 +98,7 @@ function release() {
     }
 
     if(doesTagExist(version) === true) {
-        logger.error(`Tag cms-gateway-v${version} already exists`);
+        logger.error(`🟠 Tag cms-gateway-v${version} already exists!`);
         process.exit(1);
     }
 
