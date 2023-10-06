@@ -44,6 +44,7 @@ class ChangelogBuilder {
     }
 
     private static getCommits(project: string, graph: IGraph, latestTag: string): string[] {
+        console.log(getNxProjectPaths())
         const result: string[] = [];
         const dependencies = this.getDependencies(project, graph);
         const paths = dependencies.map((d) => this.getPath(d));
@@ -61,7 +62,6 @@ class ChangelogBuilder {
         const parts = project.split('-');
         const category = parts[0] === 'app' ? 'apps' : 'libs';
         const folders = parts.slice(1).join('/');
-        console.log(`${category}/${folders}`);
         return `${category}/${folders}`;
     }
 
@@ -69,6 +69,17 @@ class ChangelogBuilder {
         const dependencies: IGraphDependency[] = graph.projectGraph.dependencies[project];
         return dependencies.map((d) => d.target).filter((d) => graph.projects.includes(d));
     }
+}
+
+function getNxProjectPaths(): Record<string, string> {
+    const nodes = exec('nx print-affected --select=projectGraph.nodes --base=master', true);
+    const paths: Record<string, string> = {};
+
+    for (const [name, data] of Object.entries(JSON.parse(nodes)) as any) {
+        paths[name] = data.root;
+    }
+
+    return paths;
 }
 
 function exec<T extends boolean = false>(command: string, encode: T): T extends true ? string : Buffer  {
