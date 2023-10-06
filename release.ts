@@ -1,9 +1,5 @@
 import { execSync } from 'child_process';
 
-function execCommand(command: string): string {
-    return execSync(command, { encoding: 'utf-8' }).trim();
-}
-
 function main() {
     const version = process.argv[2];
 
@@ -12,18 +8,18 @@ function main() {
         process.exit(1);
     }
 
-    const latestTag = execCommand('git describe --tags --abbrev=0 --match "cms-gateway-v*.*.*"');
-    const affected = execCommand(`nx print-affected --select=projects --type=app --base=${latestTag}`).split(',');
+    const latestTag = execSync('git describe --tags --abbrev=0 --match "cms-gateway-v*.*.*"', { encoding: 'utf-8' });
+    const affected = execSync(`nx print-affected --select=projects --type=app --base=${latestTag}`, { encoding: 'utf-8' }).split(',');
 
     for (const app of affected) {
-        execCommand(`npm --prefix ./apps/${app} version ${version}`);
-        execCommand(`git commit -am "chore(${app}): Updated ${app} to version ${version}"`);
-        execCommand(`git tag "${app}-v${version}"`);
+        execSync(`npm --prefix ./apps/${app} version ${version}`);
+        execSync(`git commit -am "chore(${app}): Updated ${app} to version ${version}"`);
+        execSync(`git tag "${app}-v${version}"`);
     }
 
-    execCommand(`npm version ${version} --no-git-tag-version`);
-    execCommand(`git commit -am "chore(cms-gateway): Updated cms-gateway to version ${version}"`);
-    execCommand(`git tag "cms-gateway-v${version}"`);
+    execSync(`npm version ${version} --no-git-tag-version`);
+    execSync(`git commit -am "chore(cms-gateway): Updated cms-gateway to version ${version}"`);
+    execSync(`git tag "cms-gateway-v${version}"`);
 }
 
 main();
