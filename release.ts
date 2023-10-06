@@ -1,34 +1,52 @@
 import { execSync } from 'child_process';
-import type { ExecutorContext, ProjectGraphDependency } from '@nx/devkit';
 
-export class ProjectUtil {
-    // static async getDependencyRoots(project: string): Promise<any> {
-    //     const dependencies = await this.getDependencies(project);
-    //     return dependencies.map((name) => ({
-    //         name,
-    //         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    //         path: context.projectsConfigurations!.projects[name].root,
-    //     }));
-    // }
+function exec<T extends boolean = false>(command: string, encode: T): T extends true ? string : Buffer  {
+    return execSync(command, { encoding: encode ? 'utf-8' : undefined }) as T extends true ? string : Buffer ;
+}
 
-    static async getDependencies(project: string): Promise<string[]> {
-        const {createProjectGraphAsync} = await import('@nx/devkit');
-        const dependencyGraph =
-            typeof createProjectGraphAsync === 'function'
-                ? await createProjectGraphAsync()
-                :
-                (
-                    (await import('@nx/workspace/src/core/project-graph')) as any
-                ).createProjectGraph();
-        return this.getProjectsFromDependencies(dependencyGraph.dependencies[project]);
+interface IGraph {
+ projects: string[];
+ projectGraph: { dependencies: Record<string,unknown[]> };
+}
+
+export class ChangelogBuilder {
+    static build() {}
+
+    static getCommitsOfDependencies(project: string, graph: IGraph, latestTag: string) {
+        const paths = this.dependenciesToPath(project, graph);
+        for(const path of paths) {
+            const commits = exec(`git log ${latestTag}..HEAD --pretty=format:'%s' -- ${path}`, true).trim();
+            console.log(commits)
+        }
     }
 
-    private static getProjectsFromDependencies(dependencies: ProjectGraphDependency[]): string[] {
+    static dependenciesToPath(project: string, graph: IGraph): string[] {
+        //TODO ADD WORKSPACE JSON
+        const workspace: { projects: Record<string, string> } = {
+            projects: {
+                'app1': 'apps/app1',
+                'app2': 'apps/app2',
+                'util-string': 'libs/util/string',
+            }
+        }
+        const dependencies = this.filterDependencies(project, graph);
+        const paths = dependencies.map((d) => workspace.projects[d]);
+        paths.push(workspace.projects[project]);
+        return paths;
+    }
+
+    static filterDependencies(project: string, graph: IGraph): string[] {
+        const { projects, projectGraph } = graph;
+        const dependencies = this.getAllDependenciesOfProject(projectGraph.dependencies[project]);
+        return dependencies.filter((d) => projects.includes(d));
+    }
+
+    private static getAllDependenciesOfProject(dependencies: any[]): string[] {
         return dependencies?.filter((d) => !d.target.startsWith('npm:')).map((d) => d.target);
     }
 }
 
-async function main() {
+function main() {
     const version = process.argv[2];
 
     if (!version) {
@@ -36,20 +54,21 @@ async function main() {
         process.exit(1);
     }
 
-    const latestTag = execSync('git describe --tags --abbrev=0 --match "cms-gateway-v*.*.*"', {encoding: 'utf-8'});
-    const affected = execSync(`nx print-affected --select=projects --type=app --base=${latestTag}`, {encoding: 'utf-8'}).split(',');
+    const latestTag = exec('git describe --tags --abbrev=0 --match "cms-gateway-v*.*.*"', true).trim();
+    const affected = exec(`nx print-affected --select=projects --type=app --base=${latestTag}`, true).split(',');
+    const graph = JSON.parse(exec(`nx print-affected --base=${latestTag}`, true));
 
     for (const app of affected) {
         const app_name = app.trim();
-        console.log(await ProjectUtil.getDependencies(app_name));
-        // execSync(`npm --prefix ./apps/${app_name} version ${version}`);
-        // execSync(`git commit -am "chore(${app_name}): Updated ${app_name} to version ${version}"`);
-        // execSync(`git tag "${app_name}-v${version}"`);
+        ChangelogBuilder.getCommitsOfDependencies(app_name, graph, latestTag);
+        // exec(`npm --prefix ./apps/${app_name} version ${version}`, false);
+        // exec(`git commit -am "chore(${app_name}): Updated ${app_name} to version ${version}"`, false);
+        // exec(`git tag "${app_name}-v${version}"`, false);
     }
 
-    // execSync(`npm version ${version} --no-git-tag-version`);
-    // execSync(`git commit -am "chore(cms-gateway): Updated cms-gateway to version ${version}"`);
-    // execSync(`git tag "cms-gateway-v${version}"`);
+    // exec(`npm version ${version} --no-git-tag-version`, false);
+    // exec(`git commit -am "chore(cms-gateway): Updated cms-gateway to version ${version}"`, false);
+    // exec(`git tag "cms-gateway-v${version}"`, false);
 }
 
 main();
