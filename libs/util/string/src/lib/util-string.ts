@@ -14,6 +14,6 @@ export class StringUtil {
   }
 
   static h(): string {
-    return "Worldddssasdsssdd";
+    return StringUtil.hello() + " " + StringUtil.world();
   }
 }
