@@ -109,9 +109,11 @@ function release() {
         ChangelogBuilder.build(app, graph, latestTag, version);
         logger.log(`📜 Update changelog for ${app}`);
         exec(`npm --prefix ./apps/${app} version ${version}`, false);
+        logger.log(`📝 Update package.json for ${app} to version ${version}`);
     });
 
     exec(`npm version ${version} --no-git-tag-version`, false);
+    logger.log(`📝 Update package.json for cms-gateway to version ${version}`);
     exec(`git commit -am "release(cms-gateway): Updated cms-gateway to version ${version}"`, false);
     logger.log(`📦 Commit cms-gateway to version ${version}`);
 
