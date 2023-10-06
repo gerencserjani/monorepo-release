@@ -16,8 +16,11 @@ function main() {
     const affectedAppsOutput = execCommand(`nx print-affected --select=projects --type=app --base=${latestTag}`);
     const affectedApps = affectedAppsOutput.split(',');
 
+    console.log("affected apps", affectedApps)
     for (const app of affectedApps) {
+        console.log(app)
         const app_name = app.trim();
+        console.log(app_name)
         // execCommand(`npm --prefix ./apps/${app_name} version ${newVersion}`);
         // execCommand(`git commit -am "chore(${app_name}): Updated ${app_name} to version ${newVersion}"`);
         // execCommand(`git tag "${app_name}-v${newVersion}"`);
