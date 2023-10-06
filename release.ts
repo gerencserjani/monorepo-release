@@ -12,9 +12,10 @@ function main() {
     const affected = execSync(`nx print-affected --select=projects --type=app --base=${latestTag}`, { encoding: 'utf-8' }).split(',');
 
     for (const app of affected) {
-        execSync(`npm --prefix ./apps/${app} version ${version}`);
-        execSync(`git commit -am "chore(${app}): Updated ${app} to version ${version}"`);
-        execSync(`git tag "${app}-v${version}"`);
+        const app_name = app.trim();
+        execSync(`npm --prefix ./apps/${app_name} version ${version}`);
+        execSync(`git commit -am "chore(${app_name}): Updated ${app_name} to version ${version}"`);
+        execSync(`git tag "${app_name}-v${version}"`);
     }
 
     execSync(`npm version ${version} --no-git-tag-version`);
