@@ -8,7 +8,7 @@ export class AppController {
 
   @Get()
   getData() {
-    console.log("sasddssd2s2asdd")
+    console.log("sasddssd2s2assdd")
     return this.appService.getData();
   }
 }

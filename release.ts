@@ -62,20 +62,15 @@ class ChangelogBuilder {
                 'util-string': 'libs/util/string',
             }
         }
-        const dependencies = this.filterDependencies(project, graph);
+        const dependencies = this.getDependencies(project, graph);
         const paths = dependencies.map((d) => workspace.projects[d]);
         paths.push(workspace.projects[project]);
         return paths;
     }
 
-    private static filterDependencies(project: string, graph: IGraph): string[] {
-        const dependencies = this.getAllDependencies(project, graph);
-        return dependencies.filter((d) => graph.projects.includes(d));
-    }
-
-    private static getAllDependencies(project: string, graph: IGraph): string[] {
+    private static getDependencies(project: string, graph: IGraph): string[] {
         const dependencies: IGraphDependency[] = graph.projectGraph.dependencies[project];
-        return dependencies?.filter((d) => !d.target.startsWith('npm:')).map((d) => d.target);
+        return dependencies.map((d) => d.target).filter((d) => graph.projects.includes(d));
     }
 }
 
@@ -88,12 +83,22 @@ function getAffectedApps(latestTag: string): string[] {
     return apps.map((app) => app.trim());
 }
 
+function doesTagExist(version: string): boolean {
+    const remoteTags = exec("git ls-remote --tags origin", true).split("\n");
+    return remoteTags.some(line => line.endsWith(version));
+}
+
 function release() {
     const logger = new Logger('Release');
     const version = process.argv[2];
 
     if (!version) {
         console.log('Usage: <script> <new_version>');
+        process.exit(1);
+    }
+
+    if(doesTagExist(version) === true) {
+        logger.error(`Tag cms-gateway-v${version} already exists`);
         process.exit(1);
     }
 
