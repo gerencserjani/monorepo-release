@@ -8,7 +8,6 @@ fi
 new_version="$1"
 
 latest_tag=$(git describe --tags --abbrev=0 --match "cms-gateway-v*.*.*")
-latest_tag_hash=$(git rev-list -n 1 $latest_tag)
 
 affected_apps=$(nx print-affected --select=projects --type=app --base=$latest_tag --head=HEAD)
 
