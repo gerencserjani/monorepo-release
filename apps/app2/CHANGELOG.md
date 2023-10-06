@@ -1,4 +1,6 @@
 # app2 changelog
+## [9.0.1](https://github.com/gerencserjani/monorepo-release/compare/app2-v9.0.0...app2-9.0.1) (2023-10-06)
+
 ## 0.1.0 (2023-10-05)
 
 
