@@ -1,6 +1,7 @@
 import { execSync } from 'child_process';
 import * as path from 'path';
 import * as fs from 'fs';
+import { Logger } from '@nestjs/common';
 
 interface IGraph {
  projects: string[];
@@ -88,6 +89,7 @@ function getAffectedApps(latestTag: string): string[] {
 }
 
 function release() {
+    const logger = new Logger('Release');
     const version = process.argv[2];
 
     if (!version) {
@@ -105,15 +107,21 @@ function release() {
 
     affected.forEach((app) => {
         ChangelogBuilder.build(app, graph, latestTag, version);
+        logger.log(`📜 Update changelog for ${app}`);
         exec(`npm --prefix ./apps/${app} version ${version}`, false);
     });
 
     exec(`npm version ${version} --no-git-tag-version`, false);
     exec(`git commit -am "release(cms-gateway): Updated cms-gateway to version ${version}"`, false);
+    logger.log(`📦 Commit cms-gateway to version ${version}`);
 
-    affected.forEach((app) => exec(`git tag "${app}-v${version}"`, false));
+    affected.forEach((app) => {
+        exec(`git tag "${app}-v${version}"`, false)
+        logger.log(`🔖 Tag ${app} with v${version}`);
+    });
 
     exec(`git tag "cms-gateway-v${version}"`, false);
+    logger.log(`🔖 Tag cms-gateway with v${version}`);
 }
 
 release();
