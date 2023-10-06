@@ -15,13 +15,9 @@ for app in $affected_apps; do
   app_name="${app%,}"
   npm --prefix ./apps/$app_name version $new_version
   git tag "$app_name-v$new_version"
+  git commit -m "chore($app_name): Updated $app_name to version $new_version"
 done
 
 npm version $new_version --no-git-tag-version
 git tag "cms-gateway-v$new_version"
-
-commit_message="Updated $affected_apps and GATEWAY to version $new_version and tagged individually."
-
-git commit -am "$commit_message"
-
-echo $commit_message
+git commit -m "chore(cms-gateway): Updated cms-gateway to version $new_version"
