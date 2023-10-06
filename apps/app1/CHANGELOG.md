@@ -1,3 +1,7 @@
+## 0.1.0
+
+fix(Apps): fixApps
+
 ## 0.0.4
 
 fix(StringUtil): fix2
