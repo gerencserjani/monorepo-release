@@ -1,4 +1,11 @@
 # util-string changelog
+## [0.2.0](https://github.com/gerencserjani/monorepo-release/compare/util-string-0.1.0...util-string-0.2.0) (2023-10-06)
+
+
+### Features
+
+* **StringUtil:** HelloWCddd ([896a7d4](https://github.com/gerencserjani/monorepo-release/commit/896a7d45d46543611725d05d22ebbcd2d292a43f))
+
 ## 0.1.0 (2023-10-06)
 
 
