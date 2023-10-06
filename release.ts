@@ -109,21 +109,21 @@ function release() {
         ChangelogBuilder.build(app, graph, latestTag, version);
         logger.log(`📜 Update changelog for ${app}`);
         exec(`npm --prefix ./apps/${app} version ${version}`, false);
-        logger.log(`📝 Update package.json for ${app} to version ${version}`);
+        logger.log(`📝 Update package.json for ${app}`);
     });
 
     exec(`npm version ${version} --no-git-tag-version`, false);
-    logger.log(`📝 Update package.json for cms-gateway to version ${version}`);
+    logger.log(`📝 Update package.json for cms-gateway`);
     exec(`git commit -am "release(cms-gateway): Updated cms-gateway to version ${version}"`, false);
-    logger.log(`📦 Commit cms-gateway to version ${version}`);
+    logger.log(`📦 Commit cms-gateway changes`);
 
     affected.forEach((app) => {
         exec(`git tag "${app}-v${version}"`, false)
-        logger.log(`🔖 Tag ${app} with v${version}`);
+        logger.log(`🔖 Tag ${app}`);
     });
 
     exec(`git tag "cms-gateway-v${version}"`, false);
-    logger.log(`🔖 Tag cms-gateway with v${version}`);
+    logger.log(`🔖 Tag cms-gateway`);
 }
 
 release();
