@@ -5,30 +5,25 @@ function execCommand(command: string): string {
 }
 
 function main() {
-    const newVersion = process.argv[2];
+    const version = process.argv[2];
 
-    if (!newVersion) {
+    if (!version) {
         console.log('Usage: <script> <new_version>');
         process.exit(1);
     }
 
     const latestTag = execCommand('git describe --tags --abbrev=0 --match "cms-gateway-v*.*.*"');
-    const affectedAppsOutput = execCommand(`nx print-affected --select=projects --type=app --base=${latestTag}`);
-    const affectedApps = affectedAppsOutput.split(',');
+    const affected = execCommand(`nx print-affected --select=projects --type=app --base=${latestTag}`).split(',');
 
-    console.log("affected apps", affectedApps)
-    for (const app of affectedApps) {
-        console.log(app)
-        const app_name = app.trim();
-        console.log(app_name)
-        // execCommand(`npm --prefix ./apps/${app_name} version ${newVersion}`);
-        // execCommand(`git commit -am "chore(${app_name}): Updated ${app_name} to version ${newVersion}"`);
-        // execCommand(`git tag "${app_name}-v${newVersion}"`);
+    for (const app of affected) {
+        execCommand(`npm --prefix ./apps/${app} version ${version}`);
+        execCommand(`git commit -am "chore(${app}): Updated ${app} to version ${version}"`);
+        execCommand(`git tag "${app}-v${version}"`);
     }
 
-    // execCommand(`npm version ${newVersion} --no-git-tag-version`);
-    // execCommand(`git commit -am "chore(cms-gateway): Updated cms-gateway to version ${newVersion}"`);
-    // execCommand(`git tag "cms-gateway-v${newVersion}"`);
+    execCommand(`npm version ${version} --no-git-tag-version`);
+    execCommand(`git commit -am "chore(cms-gateway): Updated cms-gateway to version ${version}"`);
+    execCommand(`git tag "cms-gateway-v${version}"`);
 }
 
 main();
