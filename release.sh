@@ -9,7 +9,7 @@ new_version="$1"
 
 latest_tag=$(git describe --tags --abbrev=0 --match "cms-gateway-v*.*.*")
 
-affected_apps=$(nx print-affected --select=projects --type=app --base=$latest_tag --head=HEAD)
+affected_apps=$(nx print-affected --select=projects --type=app --base=$latest_tag)
 
 for app in $affected_apps; do
   app_name="${app%,}"
