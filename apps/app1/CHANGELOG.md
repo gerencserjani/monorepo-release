@@ -1,3 +1,8 @@
+## 0.0.4
+
+fix(StringUtil): fix2
+
+
 ## 0.0.3
 
 fix(StringUtil): fix
