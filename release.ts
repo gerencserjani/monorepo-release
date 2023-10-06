@@ -1,4 +1,6 @@
 import { execSync } from 'child_process';
+import * as path from 'path';
+import * as fs from 'fs';
 
 function exec<T extends boolean = false>(command: string, encode: T): T extends true ? string : Buffer  {
     return execSync(command, { encoding: encode ? 'utf-8' : undefined }) as T extends true ? string : Buffer ;
@@ -6,21 +8,56 @@ function exec<T extends boolean = false>(command: string, encode: T): T extends 
 
 interface IGraph {
  projects: string[];
- projectGraph: { dependencies: Record<string,unknown[]> };
+ projectGraph: { dependencies: Record<string,IGraphDependency[]> };
 }
 
-export class ChangelogBuilder {
-    static build() {}
+interface IGraphDependency {
+    source: string;
+    target: string;
+    type: string;
+}
 
-    static getCommitsOfDependencies(project: string, graph: IGraph, latestTag: string) {
+class ChangelogBuilder {
+    static build(project: string, graph: IGraph, latestTag: string) {
+        //TODO ADD WORKSPACE JSON
+        const workspace: { projects: Record<string, string> } = {
+            projects: {
+                'app1': 'apps/app1',
+                'app2': 'apps/app2',
+            }
+        }
+        const projectPath = workspace.projects[project]
+        const commits = this.getCommits(project, graph, latestTag);
+        this.updateChangelog(projectPath, commits.join('\n\n'), latestTag);
+    }
+
+    private static updateChangelog(projectPath: string, commits: string, tag: string) {
+        const changelogPath = path.join(projectPath, 'CHANGELOG.md');
+        let changelogContent = '';
+
+        if (fs.existsSync(changelogPath)) {
+            changelogContent = fs.readFileSync(changelogPath, { encoding: 'utf-8' });
+        }
+
+        const changelogTag = tag.split('-v')[1];
+
+        const newEntry = `## ${changelogTag}\n\n${commits}\n\n`;
+        changelogContent = newEntry + changelogContent;
+
+        fs.writeFileSync(changelogPath, changelogContent, { encoding: 'utf-8' });
+    }
+
+    private static getCommits(project: string, graph: IGraph, latestTag: string): string[] {
+        const result: string[] = [];
         const paths = this.dependenciesToPath(project, graph);
         for(const path of paths) {
             const commits = exec(`git log ${latestTag}..HEAD --pretty=format:'%s' -- ${path}`, true).trim();
-            console.log(commits)
+            result.push(commits);
         }
+        return result;
     }
 
-    static dependenciesToPath(project: string, graph: IGraph): string[] {
+    private static dependenciesToPath(project: string, graph: IGraph): string[] {
         //TODO ADD WORKSPACE JSON
         const workspace: { projects: Record<string, string> } = {
             projects: {
@@ -35,18 +72,18 @@ export class ChangelogBuilder {
         return paths;
     }
 
-    static filterDependencies(project: string, graph: IGraph): string[] {
-        const { projects, projectGraph } = graph;
-        const dependencies = this.getAllDependenciesOfProject(projectGraph.dependencies[project]);
-        return dependencies.filter((d) => projects.includes(d));
+    private static filterDependencies(project: string, graph: IGraph): string[] {
+        const dependencies = this.getAllDependencies(project, graph);
+        return dependencies.filter((d) => graph.projects.includes(d));
     }
 
-    private static getAllDependenciesOfProject(dependencies: any[]): string[] {
+    private static getAllDependencies(project: string, graph: IGraph): string[] {
+        const dependencies: IGraphDependency[] = graph.projectGraph.dependencies[project];
         return dependencies?.filter((d) => !d.target.startsWith('npm:')).map((d) => d.target);
     }
 }
 
-function main() {
+function release() {
     const version = process.argv[2];
 
     if (!version) {
@@ -58,9 +95,13 @@ function main() {
     const affected = exec(`nx print-affected --select=projects --type=app --base=${latestTag}`, true).split(',');
     const graph = JSON.parse(exec(`nx print-affected --base=${latestTag}`, true));
 
+    if(affected.length === 0) {
+        process.exit(1)
+    }
+
     for (const app of affected) {
         const app_name = app.trim();
-        ChangelogBuilder.getCommitsOfDependencies(app_name, graph, latestTag);
+        ChangelogBuilder.build(app_name, graph, latestTag);
         // exec(`npm --prefix ./apps/${app_name} version ${version}`, false);
         // exec(`git commit -am "chore(${app_name}): Updated ${app_name} to version ${version}"`, false);
         // exec(`git tag "${app_name}-v${version}"`, false);
@@ -71,4 +112,4 @@ function main() {
     // exec(`git tag "cms-gateway-v${version}"`, false);
 }
 
-main();
+release();
