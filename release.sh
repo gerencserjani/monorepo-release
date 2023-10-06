@@ -14,10 +14,10 @@ affected_apps=$(nx print-affected --select=projects --type=app --base=$latest_ta
 for app in $affected_apps; do
   app_name="${app%,}"
   npm --prefix ./apps/$app_name version $new_version
-  git tag "$app_name-v$new_version"
   git commit -am "chore($app_name): Updated $app_name to version $new_version"
+  git tag "$app_name-v$new_version"
 done
 
 npm version $new_version --no-git-tag-version
-git tag "cms-gateway-v$new_version"
 git commit -am "chore(cms-gateway): Updated cms-gateway to version $new_version"
+git tag "cms-gateway-v$new_version"
