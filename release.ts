@@ -14,7 +14,7 @@ interface IGraphDependency {
 }
 
 class ChangelogBuilder {
-    static build(project: string, graph: IGraph, latestTag: string) {
+    static build(project: string, graph: IGraph, latestTag: string, version: string) {
         //TODO ADD WORKSPACE JSON
         const workspace: { projects: Record<string, string> } = {
             projects: {
@@ -22,9 +22,10 @@ class ChangelogBuilder {
                 'app2': 'apps/app2',
             }
         }
-        const projectPath = workspace.projects[project]
+        const path = workspace.projects[project]
         const commits = this.getCommits(project, graph, latestTag);
-        this.updateChangelog(projectPath, commits.join('\n\n'), latestTag);
+        this.updateChangelog(path, commits.join('\n'), version);
+        exec(`git add ${path}`, false);
     }
 
     private static updateChangelog(projectPath: string, commits: string, tag: string) {
@@ -35,9 +36,7 @@ class ChangelogBuilder {
             changelogContent = fs.readFileSync(changelogPath, { encoding: 'utf-8' });
         }
 
-        const changelogTag = tag.split('-v')[1];
-
-        const newEntry = `## ${changelogTag}\n\n${commits}\n\n`;
+        const newEntry = `## ${tag}\n\n${commits}\n\n`;
         changelogContent = newEntry + changelogContent;
 
         fs.writeFileSync(changelogPath, changelogContent, { encoding: 'utf-8' });
@@ -101,7 +100,7 @@ function release() {
 
     for (const app of affected) {
         const app_name = app.trim();
-        ChangelogBuilder.build(app_name, graph, latestTag);
+        ChangelogBuilder.build(app_name, graph, latestTag, version);
         exec(`npm --prefix ./apps/${app_name} version ${version}`, false);
         exec(`git commit -am "chore(${app_name}): Updated ${app_name} to version ${version}"`, false);
         exec(`git tag "${app_name}-v${version}"`, false);
