@@ -10,7 +10,7 @@ export class StringUtil {
 
   static world(): string {
     console.log("sas2sss")
-    return "Worldddddddd";
+    return "Worlddddddddd";
   }
 
   static h(): string {
