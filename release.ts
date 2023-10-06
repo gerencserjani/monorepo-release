@@ -45,7 +45,11 @@ class ChangelogBuilder {
 
     private static getCommits(project: string, graph: IGraph, latestTag: string): string[] {
         const result: string[] = [];
-        const paths = this.dependenciesToPaths(project, graph);
+        const dependencies = this.getDependencies(project, graph);
+        const paths = dependencies.map((d) => this.getPath(d));
+
+        paths.push(this.getPath(project));
+
         for(const path of paths) {
             const commits = exec(`git log ${latestTag}..HEAD --pretty=format:'%s' -- ${path}`, true).trim();
             result.push(commits);
@@ -53,19 +57,12 @@ class ChangelogBuilder {
         return result;
     }
 
-    private static dependenciesToPaths(project: string, graph: IGraph): string[] {
-        //TODO ADD WORKSPACE JSON
-        const workspace: { projects: Record<string, string> } = {
-            projects: {
-                'app1': 'apps/app1',
-                'app2': 'apps/app2',
-                'util-string': 'libs/util/string',
-            }
-        }
-        const dependencies = this.getDependencies(project, graph);
-        const paths = dependencies.map((d) => workspace.projects[d]);
-        paths.push(workspace.projects[project]);
-        return paths;
+    private static getPath(project: string): string {
+        const parts = project.split('-');
+        const category = parts[0] === 'app' ? 'apps' : 'libs';
+        const folders = parts.slice(1).join('/');
+        console.log(`${category}/${folders}`);
+        return `${category}/${folders}`;
     }
 
     private static getDependencies(project: string, graph: IGraph): string[] {
