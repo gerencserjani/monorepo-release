@@ -72,7 +72,7 @@ class ChangelogBuilder {
 }
 
 function getNxProjectPaths(): Record<string, string> {
-    const nodes = exec('nx print-affected --select=projectGraph.nodes --base=master', true);
+    const nodes = exec('nx print-affected --select=projectGraph.nodes', true);
     const paths: Record<string, string> = {};
 
     for (const [name, data] of Object.entries(JSON.parse(nodes)) as any) {
@@ -98,15 +98,15 @@ function doesTagExist(version: string): boolean {
 
 function release() {
     const logger = new Logger('Release');
-    const version = process.argv[2];
+    const { version } = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 
     if (!version) {
-        console.log('Usage: <script> <new_version>');
+        logger.error('🔴 Version is not specified in the root package.json.');
         process.exit(1);
     }
 
     if(doesTagExist(version) === true) {
-        logger.error(`🟠 Tag cms-gateway-v${version} already exists!`);
+        logger.error(`🔴 Tag cms-gateway-v${version} already exists!`);
         process.exit(1);
     }
 
@@ -115,6 +115,7 @@ function release() {
     const graph = JSON.parse(exec(`nx print-affected --base=${latestTag}`, true));
 
     if(affected.length === 0 || affected[0] === '') {
+        logger.warn('🟠 No apps affected by this release')
         process.exit(1)
     }
 
@@ -125,8 +126,6 @@ function release() {
         logger.log(`📝 Update package.json for ${app}`);
     });
 
-    exec(`npm version ${version} --no-git-tag-version`, false);
-    logger.log(`📝 Update package.json for cms-gateway`);
     exec(`git commit -am "release(cms-gateway): Updated cms-gateway to version ${version}"`, false);
     logger.log(`📦 Commit cms-gateway changes`);
 
