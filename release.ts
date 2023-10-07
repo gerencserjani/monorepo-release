@@ -15,6 +15,7 @@ interface IGraphDependency {
 }
 
 class ChangelogBuilder {
+    private static logger = new Logger(ChangelogBuilder.name);
     static build(project: string, graph: IGraph, latestTag: string, version: string) {
         //TODO ADD WORKSPACE JSON
         const workspace: { projects: Record<string, string> } = {
@@ -27,6 +28,7 @@ class ChangelogBuilder {
         const commits = this.getCommits(project, graph, latestTag);
         this.updateChangelog(path, commits.join('\n'), version);
         exec(`git add ${path}`, false);
+        ChangelogBuilder.logger.log(`📜 Update changelog for ${project}`);
     }
 
     private static updateChangelog(projectPath: string, commits: string, tag: string) {
@@ -121,7 +123,6 @@ function release() {
 
     affected.forEach((app) => {
         // ChangelogBuilder.build(app, graph, latestTag, version);
-        logger.log(`📜 Update changelog for ${app}`);
         exec(`npm --prefix ./apps/${app} version ${version}`, false);
         logger.log(`📝 Update package.json for ${app}`);
     });
