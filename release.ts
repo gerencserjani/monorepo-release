@@ -120,7 +120,7 @@ function release() {
     }
 
     affected.forEach((app) => {
-        ChangelogBuilder.build(app, graph, latestTag, version);
+        // ChangelogBuilder.build(app, graph, latestTag, version);
         logger.log(`📜 Update changelog for ${app}`);
         exec(`npm --prefix ./apps/${app} version ${version}`, false);
         logger.log(`📝 Update package.json for ${app}`);
