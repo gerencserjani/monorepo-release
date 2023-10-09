@@ -1,7 +1,18 @@
 import * as fs from 'fs';
 import { Logger } from '@nestjs/common';
-import { doesTagExist, exec, getAffectedApps } from './tools/release-utils/utils';
+import { exec } from './tools/release-utils/utils';
 import { Changelog } from './tools/release-utils/changelog';
+
+
+function getAffectedApps(latestTag: string): string[] {
+    const apps = exec(`nx print-affected --select=projects --type=app --base=${latestTag} --head=HEAD`, true);
+    return apps.split(',').map((a) => a.trim());
+}
+
+function doesTagExist(version: string): boolean {
+    const tags = exec("git ls-remote --tags origin", true);
+    return tags.split("\n").some((t) => t.endsWith(version));
+}
 
 function release() {
     const logger = new Logger('Release');
