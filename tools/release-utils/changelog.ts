@@ -17,7 +17,7 @@ interface IDependency {
 interface ICommit {
     hash: string;
     message: string;
-    issue?: string;
+    issue?: string | null;
 }
 
 const COMMIT_TYPES = ['feat', 'fix', 'chore', 'refactor', 'perf', 'test'];
