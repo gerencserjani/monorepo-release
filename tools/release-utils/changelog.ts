@@ -26,12 +26,12 @@ const REPO_URL = "https://github.com/gerencserjani/monorepo-release";
 export class Changelog {
     private readonly logger = new Logger(Changelog.name);
     private readonly workspace = JSON.parse(fs.readFileSync('./workspac.json', 'utf8'));
-    private readonly libsCommits: Map<string, ICommit[]>;
+    private readonly affectedLibsCommits: Map<string, ICommit[]>;
     private readonly graph: IGraph;
 
     constructor(private readonly latestTag: string) {
         this.graph = this.getGraph();
-        this.libsCommits = this.getLibsCommits();
+        this.affectedLibsCommits = this.getAffectedLibsCommits();
     }
 
     build(app: string, version: string) {
@@ -44,7 +44,7 @@ export class Changelog {
         this.logger.log(`📜 Update changelog for ${app}`);
     }
 
-    private updateChangelog(appPath: string, commits: ICommit[], tag: string) {
+    private updateChangelog(appPath: string, commits: ICommit[], version: string) {
         const changelogPath = path.join(appPath, 'CHANGELOG.md');
         let content = '';
 
@@ -53,9 +53,9 @@ export class Changelog {
         }
 
         const categorizedCommits = this.categorizeCommits(commits);
-        const newEntry = this.generateNewEntry(categorizedCommits, tag);
+        const newContent = this.generateNewContent(categorizedCommits, version);
 
-        content = newEntry + content;
+        content = newContent + content;
         fs.writeFileSync(changelogPath, content, { encoding: 'utf-8' });
     }
 
@@ -71,15 +71,13 @@ export class Changelog {
         }, {});
     }
 
-    private generateNewEntry(categorizedCommits: Record<string, ICommit[]>, tag: string): string {
-        let newEntry = `## ${tag}\n\n`;
-
-        const capitalizeFirstLetter = (string: string) => string.charAt(0).toUpperCase() + string.slice(1);
+    private generateNewContent(categorizedCommits: Record<string, ICommit[]>, version: string): string {
+        let content = `## ${version}`;
 
         for (const type of COMMIT_TYPES) {
             if (categorizedCommits[type]) {
-                newEntry += `### ${capitalizeFirstLetter(type)}\n\n`;
-                newEntry += categorizedCommits[type].map(commit => {
+                content += `### ${type}`;
+                content += categorizedCommits[type].map(commit => {
                     const strippedMessage = commit.message.replace(/^([a-zA-Z]+)\((.*)\):\s*/, '$2: ');
                     let commitLine = `- ${strippedMessage} ([${commit.hash}](${REPO_URL}/commit/${commit.hash}))`;
 
@@ -92,15 +90,15 @@ export class Changelog {
             }
         }
 
-        return newEntry;
+        return content;
     }
 
     private collectCommits(app: string, appPath: string): ICommit[] {
-        const result: ICommit[] = [...this.getCommits(appPath)]
+        const result: ICommit[] = this.getCommits(appPath);
         const dependencies = this.getDependencies(app);
 
         for(const dependency of dependencies) {
-            const commits: ICommit[] = this.libsCommits.get(dependency) || [];
+            const commits: ICommit[] = this.affectedLibsCommits.get(dependency) || [];
             result.push(...commits);
         }
         return result;
@@ -143,7 +141,7 @@ export class Changelog {
         return libs.split(',').map((l) => l.trim());
     }
 
-    private getLibsCommits(): Map<string, ICommit[]> {
+    private getAffectedLibsCommits(): Map<string, ICommit[]> {
         const libsCommits = new Map<string, ICommit[]>();
         const libs = this.getAffectedLibs();
         libs.forEach((lib) => {
