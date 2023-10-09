@@ -9,6 +9,11 @@ function getAffectedApps(latestTag: string): string[] {
     return apps.split(',').map((a) => a.trim());
 }
 
+function getLatestTag(): string {
+    const tag = exec('git describe --tags --abbrev=0 --match "cms-gateway-v*.*.*"', true);
+    return tag.trim();
+}
+
 function doesTagExist(version: string): boolean {
     const tags = exec("git ls-remote --tags origin", true);
     return tags.split("\n").some((t) => t.endsWith(version));
@@ -28,7 +33,7 @@ function release() {
         process.exit(1);
     }
 
-    const latestTag = exec('git describe --tags --abbrev=0 --match "cms-gateway-v*.*.*"', true).trim();
+    const latestTag = getLatestTag();
     const apps = getAffectedApps(latestTag);
 
 

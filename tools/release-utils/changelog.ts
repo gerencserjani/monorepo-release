@@ -21,7 +21,7 @@ interface ICommit {
 }
 
 const COMMIT_TYPES = ['feat', 'fix', 'chore', 'refactor', 'perf', 'test'];
-const GITHUB_REPO_URL = "https://github.com/gerencserjani/monorepo-release";
+const REPO_URL = "https://github.com/gerencserjani/monorepo-release";
 
 export class Changelog {
     private readonly logger = new Logger(Changelog.name);
@@ -81,10 +81,10 @@ export class Changelog {
                 newEntry += `### ${capitalizeFirstLetter(type)}\n\n`;
                 newEntry += categorizedCommits[type].map(commit => {
                     const strippedMessage = commit.message.replace(/^([a-zA-Z]+)\((.*)\):\s*/, '$2: ');
-                    let commitLine = `- ${strippedMessage} ([${commit.hash}](${GITHUB_REPO_URL}/commit/${commit.hash}))`;
+                    let commitLine = `- ${strippedMessage} ([${commit.hash}](${REPO_URL}/commit/${commit.hash}))`;
 
                     if (commit.issue) {
-                        commitLine += ` ([#${commit.issue}](${GITHUB_REPO_URL}/issues/${commit.issue}))`;
+                        commitLine += ` ([#${commit.issue}](${REPO_URL}/issues/${commit.issue}))`;
                     }
 
                     return commitLine;
