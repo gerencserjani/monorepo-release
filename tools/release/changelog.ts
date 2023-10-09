@@ -24,7 +24,6 @@ const COMMIT_TYPES = ['feat', 'fix', 'chore', 'refactor', 'perf', 'test'];
 const REPO_URL = "https://github.com/gerencserjani/monorepo-release";
 
 export class Changelog {
-    private readonly logger = new Logger(Changelog.name);
     private readonly workspace = JSON.parse(fs.readFileSync('./workspac.json', 'utf8'));
     private readonly affectedLibsCommits: Map<string, ICommit[]>;
     private readonly graph: IGraph;
@@ -41,7 +40,7 @@ export class Changelog {
         this.updateChangelog(path, commits, version);
         exec(`git add ${path}`, false);
 
-        this.logger.log(`📜 Update changelog for ${app}`);
+        console.log(`📜 Update changelog for ${app}`);
     }
 
     private updateChangelog(appPath: string, commits: ICommit[], version: string) {
