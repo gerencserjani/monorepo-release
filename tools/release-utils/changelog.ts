@@ -16,45 +16,70 @@ interface IDependency {
 
 export class Changelog {
     private readonly logger = new Logger(Changelog.name);
-    private readonly workspace = JSON.parse(fs.readFileSync('./workspace.json', 'utf8'));
-    private readonly libsCommits = new Map<string, string>();
-    private readonly graph = this.getGraph();
+    private readonly workspace = JSON.parse(fs.readFileSync('./workspac.json', 'utf8'));
+    private readonly libsCommits: Map<string, string[]>;
+    private readonly graph: IGraph;
 
     constructor(private readonly latestTag: string) {
-        this.setLibsCommits();
+        this.graph = this.getGraph();
+        this.libsCommits = this.getLibsCommits();
     }
 
     build(app: string, version: string) {
         const appPath = this.getPath(app);
         const commits = this.collectCommits(app, appPath);
 
-        this.updateChangelog(appPath, commits.join('\n'), version);
+        this.updateChangelog(appPath, commits, version);
         exec(`git add ${appPath}`, false);
 
-        this.logger.log(`📜 Update changelog for ${appPath}`);
+        this.logger.log(`📜 Update changelog for ${app}`);
     }
 
-    private updateChangelog(appPath: string, commits: string, tag: string) {
+    private updateChangelog(appPath: string, commits: string[], tag: string) {
         const changelogPath = path.join(appPath, 'CHANGELOG.md');
-        let changelogContent = '';
+        let content = '';
 
         if (fs.existsSync(changelogPath)) {
-            changelogContent = fs.readFileSync(changelogPath, { encoding: 'utf-8' });
+            content = fs.readFileSync(changelogPath, { encoding: 'utf-8' });
         }
 
-        const newEntry = `## ${tag}\n\n${commits}\n\n`;
-        changelogContent = newEntry + changelogContent;
+        const categorizedCommits: { [key: string]: string[] } = {};
 
-        fs.writeFileSync(changelogPath, changelogContent, { encoding: 'utf-8' });
+        for (const commit of commits) {
+            const match = commit.match(/^([a-zA-Z]+)(\(.*\))?: (.*)$/);
+            if (match) {
+                const type = match[1];
+                if (!categorizedCommits[type]) {
+                    categorizedCommits[type] = [];
+                }
+                categorizedCommits[type].push(commit);
+            }
+        }
+
+        let newEntry = `## ${tag}\n\n`;
+
+        const types = ['feat', 'fix', 'chore', 'refactor', 'perf', 'test'];
+
+        const capitalizeFirstLetter = (string: string) => string.charAt(0).toUpperCase() + string.slice(1);
+
+        for (const type of types) {
+            if (categorizedCommits[type]) {
+                newEntry += `### ${capitalizeFirstLetter(type)}\n\n`;
+                newEntry += categorizedCommits[type].map(commit => `- ${commit}`).join('\n') + "\n\n";
+            }
+        }
+
+        content = newEntry + content;
+        fs.writeFileSync(changelogPath, content, { encoding: 'utf-8' });
     }
 
     private collectCommits(app: string, appPath: string): string[] {
-        const result: string[] = [this.getCommits(appPath)]
+        const result: string[] = [...this.getCommits(appPath)]
         const dependencies = this.getDependencies(app);
 
         for(const dependency of dependencies) {
-            const commits = this.libsCommits.get(dependency);
-            result.push(commits);
+            const commits: string[] = this.libsCommits.get(dependency) || [];
+            result.push(...commits);
         }
         return result;
     }
@@ -74,21 +99,24 @@ export class Changelog {
         return this.workspace.projects[projectName];
     }
 
-    private getCommits(path: string): string {
-        return exec(`git log ${this.latestTag}..HEAD --pretty=format:'%s' -- ${path}`, true).trim();
+    private getCommits(path: string): string[] {
+        const commits = exec(`git log ${this.latestTag}..HEAD --pretty=format:'%s' -- ${path}`, true);
+        return commits.split("\n").map((c) => c.trim());
     }
 
     private getAffectedLibs(): string[] {
-        const libs = exec(`nx print-affected --select=projects --type=lib --base=${this.latestTag} --head=HEAD`, true).split(',');
-        return libs.map((lib) => lib.trim());
+        const libs = exec(`nx print-affected --select=projects --type=lib --base=${this.latestTag} --head=HEAD`, true);
+        return libs.split(',').map((l) => l.trim());
     }
 
-    private setLibsCommits(): void {
+    private getLibsCommits(): Map<string, string[]> {
+        const libsCommits = new Map<string, string[]>();
         const libs = this.getAffectedLibs();
         libs.forEach((lib) => {
             const path = this.getPath(lib);
             const commits = this.getCommits(path);
-            this.libsCommits.set(lib, commits);
+            libsCommits.set(lib, commits);
         });
+        return libsCommits;
     }
 }
