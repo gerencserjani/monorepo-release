@@ -1,11 +1,10 @@
 import * as fs from 'fs';
 import { Logger } from '@nestjs/common';
 import { doesTagExist, exec, getAffectedApps } from './tools/release-utils/utils';
-import { ChangelogBuilder } from './tools/release-utils/changelog-builder';
+import { Changelog } from './tools/release-utils/changelog';
 
 function release() {
     const logger = new Logger('Release');
-    const changelog = new ChangelogBuilder();
     const { version } = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 
     if (!version) {
@@ -19,16 +18,18 @@ function release() {
     }
 
     const latestTag = exec('git describe --tags --abbrev=0 --match "cms-gateway-v*.*.*"', true).trim();
-    const affected = getAffectedApps(latestTag);
+    const apps = getAffectedApps(latestTag);
 
 
-    if(affected.length === 0 || affected[0] === '') {
+    if(apps.length === 0 || apps[0] === '') {
         logger.warn('🟠 No apps affected by this release')
         process.exit(1)
     }
 
-    affected.forEach((app) => {
-        changelog.build(app, latestTag, version);
+    const changelog = new Changelog(latestTag);
+
+    apps.forEach((app) => {
+        changelog.build(app, version);
         exec(`npm --prefix ./apps/${app} version ${version}`, false);
         logger.log(`📝 Update package.json for ${app}`);
     });
@@ -36,7 +37,7 @@ function release() {
     exec(`git commit -am "release(cms-gateway): Updated cms-gateway to version ${version}"`, false);
     logger.log(`📦 Commit cms-gateway changes`);
 
-    affected.forEach((app) => {
+    apps.forEach((app) => {
         exec(`git tag "${app}-v${version}"`, false)
         logger.log(`🔖 Tag ${app}`);
     });
